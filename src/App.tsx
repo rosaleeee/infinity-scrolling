@@ -9,6 +9,7 @@ const App: React.FC = () => {
   const unsplashService = useMemo(() => new UnsplashService(), []);
 
   const photosRef = useRef<HTMLDivElement>(null);
+  const pageCount = useRef(1);
 
   useEffect(() => {
     unsplashService.getImages().then((res) => {
@@ -27,6 +28,7 @@ const App: React.FC = () => {
       const pBottom = photoContainer.offsetTop + photoContainer.clientHeight;
 
       if (!futherRequest && scrollBottom > pBottom) {
+        pageCount.current += 1;
         setFutherRequest(true);
       }
     };
@@ -36,6 +38,17 @@ const App: React.FC = () => {
       return window.removeEventListener('scroll', handleScroll);
     };
   }, [futherRequest]);
+
+  useEffect(() => {
+    if (futherRequest) {
+      setTimeout(() => {
+        unsplashService.getImages(pageCount.current).then((res) => {
+          setPhotos((prev) => prev.concat(res));
+          setFutherRequest(false);
+        });
+      }, 2000);
+    }
+  }, [futherRequest, unsplashService]);
 
   return (
     <>
