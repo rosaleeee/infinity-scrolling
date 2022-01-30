@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosInstance } from 'axios';
 import { ResponseGetImage } from './models';
 
 class UnsplashService {
@@ -15,7 +15,7 @@ class UnsplashService {
     });
   }
 
-  public async getImages(): Promise<ResponseGetImage[] | AxiosError> {
+  public async getImages(): Promise<ResponseGetImage[]> {
     try {
       const { data } = await this.instance.get('/photos');
 
@@ -31,7 +31,7 @@ class UnsplashService {
     } catch (error) {
       console.error(error);
 
-      return error as AxiosError;
+      throw error;
     }
   }
 }
