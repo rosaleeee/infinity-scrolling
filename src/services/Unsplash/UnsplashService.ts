@@ -15,9 +15,13 @@ class UnsplashService {
     });
   }
 
-  public async getImages(): Promise<ResponseGetImage[]> {
+  public async getImages(page: number = 0): Promise<ResponseGetImage[]> {
     try {
-      const { data } = await this.instance.get('/photos');
+      const { data } = await this.instance.get('/photos', {
+        params: {
+          page,
+        },
+      });
 
       const response: ResponseGetImage[] = data.map((v: any) => {
         return {
