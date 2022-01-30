@@ -1,4 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import { ResponseGetImage } from './models';
 
 class UnsplashService {
   private instance: AxiosInstance;
@@ -12,6 +13,26 @@ class UnsplashService {
         client_id: this.UNSPLASH_ACESS_KEY,
       },
     });
+  }
+
+  public async getImages(): Promise<ResponseGetImage[] | AxiosError> {
+    try {
+      const { data } = await this.instance.get('/photos');
+
+      const response: ResponseGetImage[] = data.map((v: any) => {
+        return {
+          id: v.id,
+          description: v.description,
+          imageUrl: v.urls.small,
+        };
+      });
+
+      return response;
+    } catch (error) {
+      console.error(error);
+
+      return error as AxiosError;
+    }
   }
 }
 
